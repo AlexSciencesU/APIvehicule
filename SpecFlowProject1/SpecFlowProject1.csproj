@@ -28,4 +28,8 @@
     <Folder Include="Hooks\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VehiculeAPI\VehiculeAPI.csproj" />
+  </ItemGroup>
+
 </Project>
