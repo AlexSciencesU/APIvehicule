@@ -14,10 +14,12 @@ namespace SpecFlowProject1.Steps
         private readonly ScenarioContext _scenarioContext;
         private string _username;
         private string _password;
+        private string _immat;
         private Location _target;
         private string _lastErrorMessage;
         private FakeDataLayer _fakeDataLayer;
 
+        private string _plannedKm;
         private string _startDate;
         private string _endDate;
         private string _successMessage;
@@ -39,9 +41,19 @@ namespace SpecFlowProject1.Steps
         {
             foreach (TableRow row in table.Rows)
             {
-                this._fakeDataLayer.Clients.Add(new Client(row[0], row[1]));
+                this._fakeDataLayer.Clients.Add(new Client(row[0], row[1], row[2]));
             }
         }
+
+        [Given(@"following existing vehicules")]
+        public void GivenFollowingExistingVehicules(Table table)
+        {
+            foreach (TableRow row in table.Rows)
+            {
+                this._fakeDataLayer.Vehicules.Add(new Vehicule(row[0], row[1], row[2], row[3])) ;
+            }
+        }
+
 
         #endregion
 
@@ -57,6 +69,7 @@ namespace SpecFlowProject1.Steps
         {
             this._password = password;
         }
+
 
         [When(@"I try to connect to my account")]
         public void WhenITryToConnectToMyAccount()
@@ -91,6 +104,12 @@ namespace SpecFlowProject1.Steps
             this._target.UserConnected.Should().BeTrue();
         }
 
+        [Given(@"Kilometer's number planned is ""(.*)""")]
+        public void GivenKilometerSNumberPlannedIs(string plannedKm)
+        {
+            this._plannedKm = plannedKm;
+        }
+
 
         [Given(@"Start date is ""(.*)""")]
         public void GivenStartDateIs(string startDate)
@@ -107,7 +126,7 @@ namespace SpecFlowProject1.Steps
         [When(@"I make a reservation")]
         public void WhenIMakeAReservation()
         {
-            _successMessage = this._target.makeReservation(_startDate, _endDate);
+            _successMessage = this._target.MakeReservation(_startDate, _endDate, _immat, _username, _plannedKm);
         }
 
         [Then(@"the success message is ""(.*)""")]
@@ -115,5 +134,14 @@ namespace SpecFlowProject1.Steps
         {
             _successMessage.Should().Be(successMessage);
         }
+
+
+
+        [Given(@"Client choose immatriculation ""(.*)""")]
+        public void GivenClientChooseImmatriculation(string immat)
+        {
+            _immat = immat;
+        }
+
     }
 }

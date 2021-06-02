@@ -7,5 +7,6 @@ namespace VehiculeAPI
     public interface IDataLayer
     {
         List<Client> Clients { get; set; }
+        List<Vehicule> Vehicules { get; set; }
     }
 }

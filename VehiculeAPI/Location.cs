@@ -42,10 +42,34 @@ namespace VehiculeAPI
             return "";
         }
 
-        public string makeReservation(string startDate, string endDate)
+        public string MakeReservation(string startDate, string endDate, string immat, string username, string plannedKm)
         {
-            new Reservation(startDate, endDate);
-            return "Reservation accepted";
+            Client client = this._datalayer.Clients.SingleOrDefault(_ => _.Username == username);
+            Vehicule vehicule = this._datalayer.Vehicules.SingleOrDefault(_ => _.Immat == immat);
+            DateTime currentDate = DateTime.Now;
+            DateTime bithdate = Convert.ToDateTime(client.BirthDate);
+            int anneeCurrent = currentDate.Year;
+            int anneeBirthday = bithdate.Year;
+            int compare = anneeCurrent - anneeBirthday;
+            int chevauxFiscaux = int.Parse(vehicule.ChevauxFisc);
+            if (compare < 18) {
+                return "Client can't reserve because he is minor";
+            }
+            else if (compare < 21 && compare < 25 && chevauxFiscaux >= 8)
+            {
+                return "Client can't reserve this car because he is too young (-21)";
+            }
+            else if (compare < 25 && chevauxFiscaux > 13)
+            {
+                return "Client can't reserve this car because he is too young (-25)";
+            }
+            int prixReserv = int.Parse(vehicule.PrixReservation);
+            double tarifKil = double.Parse(vehicule.TarifKil);
+            int plannedKLM = int.Parse(plannedKm);
+            double total = prixReserv + (plannedKLM * tarifKil);
+            Reservation reservation = new Reservation(startDate, endDate, vehicule.Immat, client.Username);
+            return ($"{username} : Reservation accepted for {vehicule.Immat} vehicule from {reservation.StartDate} to {reservation.EndDate} and it will cost {total}€");
+
         }
 
     }
